@@ -51,7 +51,7 @@ const parsed = parse({ ... });
 
 ```
 
-## Usage
+## Options
 ### Dotize.dotify( ... ):
 ```typescript
 /**

@@ -35,7 +35,7 @@ export interface IDotizeDotifyOptions {
 export type IDotified = { [path: string]: any };
 
 export function dotify(object: any|any[], options?: Partial<IDotizeDotifyOptions>): IDotified {
-    options.maxDepth = isNumber(options.maxDepth) ? options.maxDepth : 0;
+    options.maxDepth = isNumber(options?.maxDepth) ? options.maxDepth : 0;
     options.prefix = options.prefix?.trim()?.endsWith('.') ? options.prefix.slice(0, -1) : options.prefix
     return _dotify(object, '', {
         prefix: (options?.prefix || '').trim(),

@@ -5,7 +5,7 @@ export function isNil(n: any): n is null|undefined {
 
 /** @internal */
 export function isObject(n: any): n is object {
-    return !isNil(n) && !isArray(n as any) && !isFunction(n);
+    return !isNil(n) && !isArray(n as any) && !isFunction(n) && typeof n === 'object';
 }
 
 /** @internal */

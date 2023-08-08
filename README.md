@@ -106,4 +106,12 @@ separator: string;
  * > dotify-curly-bracket: The index is surrounded with curly brackets. Example: "foo.{0}.bar"
  */
 arrayMode: 'dotify'|'dotify-bracked'|'dotify-curly-bracket';
+
+/**
+ * How to handle situations, were the parent is not an object, array or the child is incompatible with the parent (E.g. parent: array, child: not an array item)
+ * > override: Converts the parent to a compatible type
+ * > ignore: Skips the child item
+ * > throwError: Throws an TypeError
+ */
+incompatibleTypeStrategy: 'override'|'skip'|'throwError';
 ```

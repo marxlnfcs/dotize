@@ -1,20 +1,31 @@
 import {IDotified, IDotizeDotifyOptions} from "./dotify";
 import {isArray, isNil, isObject, isString} from "../utils/utils";
 
-export interface IDotizeParseOptions extends Pick<IDotizeDotifyOptions, 'prefix'|'separator'|'arrayMode'> {}
+export interface IDotizeParseOptions extends Pick<IDotizeDotifyOptions, 'prefix'|'separator'|'arrayMode'> {
+
+    /**
+     * How to handle situations, were the parent is not an object, array or the child is incompatible with the parent (E.g. parent: array, child: not an array item)
+     * > override: Converts the parent to a compatible type
+     * > ignore: Skips the child item
+     * > throwError: Throws an TypeError
+     */
+    incompatibleTypeStrategy: 'override'|'skip'|'throwError';
+
+}
 
 export function parse(object: IDotified, options?: Partial<IDotizeParseOptions>): any {
     return _parse(object, {
         prefix: (options?.prefix || '').trim(),
         separator: (options?.separator || '.').trim(),
         arrayMode: options?.arrayMode || 'dotify-bracket',
+        incompatibleTypeStrategy: options?.incompatibleTypeStrategy || 'throwError',
     });
 }
 
 function _parse(object: IDotified, options: IDotizeParseOptions): any {
 
     // return original value if not object
-    if(!isObject(object)){
+    if(isNil(object) || (!isObject(object) && !isArray(object))){
         return object;
     }
 
@@ -71,7 +82,22 @@ function _build(object: any, path: string, value: any, options: IDotizeParseOpti
 
     // check if pathKey matches array key
     if(isObjectArrayRegex && isObjectArrayRegex.test(pathKey)){
-        object = !object ? isArray(object) ? object : [] : object;
+
+        // set type to array if undefined
+        if(object === undefined){
+            object = [];
+        }
+
+        // check type of object
+        if(!isArray(object)){
+            switch(options.incompatibleTypeStrategy){
+                case 'override': object = []; break;
+                case 'skip': return object;
+                case 'throwError': throw new TypeError(`Cannot create property '${pathKey}' on ${typeof object} '${object}'`);
+            }
+        }
+
+        // build object
         if(isArray(object)){
             const index = parseInt(pathKey.match(isObjectArrayRegex)[1]);
             if(path){
@@ -88,11 +114,25 @@ function _build(object: any, path: string, value: any, options: IDotizeParseOpti
                 }
             }
         }
+
+        // return object
         return object;
+
     }
 
-    // check object
-    object = isObject(object) ? object : {};
+    // set type to object if undefined
+    if(object === undefined){
+        object = {};
+    }
+
+    // check type of object
+    if(object === null || typeof object === 'function' || !isObject(object)){
+        switch(options.incompatibleTypeStrategy){
+            case 'override': object = {}; break;
+            case 'skip': return object;
+            case 'throwError': throw new TypeError(`Cannot create property '${pathKey}' on ${typeof object} '${object}'`);
+        }
+    }
 
     // parse nested key
     if(path){

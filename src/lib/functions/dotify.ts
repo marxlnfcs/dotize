@@ -54,19 +54,15 @@ function _dotify(object: any|any[], prefix: string, options: IDotizeDotifyOption
     // check depth
     depth = isNumber(depth) ? depth : 0;
 
-    // return primitive types or array if options.arrayMode is 'keep'
+    // return primitive types, functions or array if options.arrayMode is 'keep'
     if(
-        (isPrimitive(object)) ||
+        isPrimitive(object) ||
         (isArray(object) && options.arrayMode === 'keep') ||
+        isFunction(object) ||
         (options.maxDepth > 0 && depth >= options.maxDepth)
     ){
         if(!prefix) return object;
         dotified[prefix] = object;
-        return dotified;
-    }
-
-    // skip functions
-    if(isFunction(object)){
         return dotified;
     }
 

@@ -2,6 +2,8 @@ import {dotify, parse} from "../src";
 
 // define sources
 const source = {
+  "date": new Date(),
+  "func": () => null,
   "government": {
     "flight": {
       "familiar": true,

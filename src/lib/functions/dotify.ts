@@ -1,4 +1,4 @@
-import {isArray, isFunction, isNumber, isPrimitive} from "../utils/utils";
+import {isArray, isFunction, isNil, isNumber, isObject, isPrimitive} from "../utils/utils";
 
 export type IDotizeDotifyArrayMode = 'dotify'|'dotify-bracket'|'dotify-curly-bracket'|'keep';
 export interface IDotizeDotifyOptions {
@@ -56,8 +56,10 @@ function _dotify(object: any|any[], prefix: string, options: IDotizeDotifyOption
 
     // return primitive types, functions or array if options.arrayMode is 'keep'
     if(
+        isNil(object) ||
         isPrimitive(object) ||
         (isArray(object) && options.arrayMode === 'keep') ||
+        (!isArray(object) && isObject(object) && Object.keys(object).length === 0) ||
         isFunction(object) ||
         (options.maxDepth > 0 && depth >= options.maxDepth)
     ){

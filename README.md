@@ -54,7 +54,7 @@ const parsed = parse({ ... });
 ## Options
 ### Dotize.dotify( ... ):
 ```typescript
-/**
+ /**
  * The prefix will be added to every key on depth 0
  * @example "$"
  * @default null
@@ -71,11 +71,25 @@ separator: string;
 /**
  * The array mode defines how arrays are handled
  * > dotify: The index will be set as plain number. Example: foo.0.bar
- * > dotify-bracket: The index will be surrounded with brackets (default). Example: "foo.[0].bar"
+ * > dotify-bracket: The index will be wrapped with surrounded (default). Example: "foo.[0].bar"
  * > dotify-curly-bracket: The index will be surrounded with curly brackets. Example: "foo.{0}.bar"
  * > keep: Arrays will be ignored. Example: { "foo": [ { "bar": "Hello World!" } ] }
  */
-arrayMode: 'dotify'|'dotify-bracked'|'dotify-curly-bracket'|'keep';
+arrayMode: 'dotify'|'dotify-bracket'|'dotify-curly-bracket';
+
+/**
+ * The empty object mode defines how empty objects{} should be handled
+ * > keep - Empty objects are kept and {} is set as the value.
+ * > remove - Empty objects will be removed.
+ */
+emptyObjectMode: 'keep'|'remove';
+
+/**
+ * The empty array mode defines how empty arrays[] should be handled
+ * > keep - Empty arrays are kept and [] is set as the value.
+ * > remove - Empty arrays will be removed.
+ */
+emptyArrayMode: 'keep'|'remove';
 
 /**
  * The method processes an object to the defined maxDepth. All beyond the maxDepth gets added to the dotified object as a whole
@@ -105,7 +119,7 @@ separator: string;
  * > dotify-bracket: The index is surrounded with brackets (default). Example: "foo.[0].bar"
  * > dotify-curly-bracket: The index is surrounded with curly brackets. Example: "foo.{0}.bar"
  */
-arrayMode: 'dotify'|'dotify-bracked'|'dotify-curly-bracket';
+arrayMode: 'dotify'|'dotify-bracket'|'dotify-curly-bracket';
 
 /**
  * How to handle situations, were the parent is not an object, array or the child is incompatible with the parent (E.g. parent: array, child: not an array item)

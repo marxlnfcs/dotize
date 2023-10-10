@@ -3,7 +3,9 @@ import {dotify, parse} from "../src";
 // define sources
 const source = {
   "date": new Date(),
-  "func": () => null,
+  "function": () => null,
+  "emptyArray": [],
+  "emptyObject": {},
   "government": {
     "flight": {
       "familiar": true,

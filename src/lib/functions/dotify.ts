@@ -1,4 +1,4 @@
-import { isArray, isBuffer, isDate, isFunction, isNil, isNumber, isObject, isPrimitive } from '../utils/utils';
+import { isArray, isDate, isFunction, isNil, isNumber, isObject, isPrimitive } from '../utils/utils';
 
 export type IDotizeDotifyArrayMode = 'dotify'|'dotify-bracket'|'dotify-curly-bracket'|'keep';
 export type IDotizeDotifyObjArrMode = 'keep'|'remove';
@@ -91,7 +91,6 @@ function _dotify(object: any|any[], prefix: string, options: IDotizeDotifyOption
       //(isArray(object) && options.arrayMode === 'keep') ||
       //(!isArray(object) && isObject(object) && Object.keys(object).length === 0) ||
       isFunction(object) ||
-      isBuffer(object) ||
       isDate(object) ||
       (options.maxDepth > 0 && depth >= options.maxDepth)
     ){

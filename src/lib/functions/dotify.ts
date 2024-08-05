@@ -1,4 +1,4 @@
-import {isArray, isFunction, isNil, isNumber, isObject, isPrimitive} from "../utils/utils";
+import { isArray, isBuffer, isDate, isFunction, isNil, isNumber, isObject, isPrimitive } from '../utils/utils';
 
 export type IDotizeDotifyArrayMode = 'dotify'|'dotify-bracket'|'dotify-curly-bracket'|'keep';
 export type IDotizeDotifyObjArrMode = 'keep'|'remove';
@@ -44,6 +44,11 @@ export interface IDotizeDotifyOptions {
      * The method processes an object to the defined maxDepth. All beyond the maxDepth gets added to the dotified object as a whole
      */
     maxDepth: number;
+
+    /**
+     * With the filter you can control if the object should be dotified or not
+     */
+    filter: (object: any) => boolean;
 }
 
 export type IDotified = { [path: string]: any };
@@ -59,6 +64,7 @@ export function dotify(object: any|any[], options?: Partial<IDotizeDotifyOptions
         emptyObjectMode: options?.emptyObjectMode || 'keep',
         emptyArrayMode: options?.emptyArrayMode || 'keep',
         maxDepth: options?.maxDepth || 0,
+        filter: options?.filter || null,
     }, 0)
 }
 
@@ -79,12 +85,15 @@ function _dotify(object: any|any[], prefix: string, options: IDotizeDotifyOption
 
     // return primitive types, functions or array if options.arrayMode is 'keep'
     if(
-        isNil(object) ||
-        isPrimitive(object) ||
-        //(isArray(object) && options.arrayMode === 'keep') ||
-        //(!isArray(object) && isObject(object) && Object.keys(object).length === 0) ||
-        isFunction(object) ||
-        (options.maxDepth > 0 && depth >= options.maxDepth)
+      (options.filter && !options.filter(object)) ||
+      isNil(object) ||
+      isPrimitive(object) ||
+      //(isArray(object) && options.arrayMode === 'keep') ||
+      //(!isArray(object) && isObject(object) && Object.keys(object).length === 0) ||
+      isFunction(object) ||
+      isBuffer(object) ||
+      isDate(object) ||
+      (options.maxDepth > 0 && depth >= options.maxDepth)
     ){
         return createDotifiedObject();
     }

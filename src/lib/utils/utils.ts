@@ -37,3 +37,13 @@ export function isBoolean(n: any): n is boolean {
 export function isString(n: any): n is string {
     return typeof n === 'string';
 }
+
+/** @internal */
+export function isDate(n: any): n is Date {
+  return n instanceof Date;
+}
+
+/** @internal */
+export function isBuffer(n: any): n is Buffer {
+  return Buffer.isBuffer(n);
+}

@@ -42,3 +42,53 @@ export function isString(n: any): n is string {
 export function isDate(n: any): n is Date {
   return n instanceof Date;
 }
+
+/** @internal */
+export function isExcluded(n: any): boolean {
+  return (
+    isNil(n) ||
+    isPrimitive(n) ||
+    isFunction(n) ||
+    isDate(n)
+  );
+}
+
+/** @internal */
+export function createSeparator(separator: string): string {
+  return separator.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/** @internal */
+export function escapeSeparator(data: string, separator: string): string {
+  const patternSeparator = new RegExp(createSeparator(separator), 'g');
+  return data.replace(patternSeparator, `\\${separator}`);
+}
+
+/** @internal */
+export function unescapeSeparator(data: string, separator: string): string {
+  return data.replace(createSeparator(separator), `\\${separator}`);
+}
+
+/** @internal */
+export function splitBySeparator(data: string, separator: string): string[] {
+  const pattern = new RegExp(`(?<!\\\\)${createSeparator(separator)}`, 'g');
+  const parts = data.split(pattern);
+  return parts;
+}
+
+/** @internal */
+export function unescapeObjectKeys(obj: any, separator: string): any {
+  const unescapeRegex = new RegExp(`\\\\${createSeparator(separator)}`, 'g');
+  function unescapeKeysRecursive(currentObj: any) {
+    if (isExcluded(currentObj) || typeof currentObj !== 'object') {
+      return currentObj;
+    }
+    const result = Array.isArray(currentObj) ? [] : {};
+    for (let key in currentObj) {
+      const unescapedKey = key.replace(unescapeRegex, separator);
+      result[unescapedKey] = unescapeKeysRecursive(currentObj[key]);
+    }
+    return result;
+  }
+  return unescapeKeysRecursive(obj);
+}

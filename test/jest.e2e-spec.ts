@@ -27,6 +27,34 @@ const source = {
   "physical": 1141390123,
   "easy": "wrapped"
 };
+
+const sourceWithDots = {
+  "foo.bar.date": new Date(),
+  "foo.bar.function": () => null,
+  "foo.bar.emptyArray": [],
+  "foo.bar.emptyObject": {},
+  "foo.bar.government": {
+    "foo.bar.flight": {
+      "foo.bar.familiar": true,
+      "foo.bar.lower": true,
+      "foo.bar.middle": "represent",
+      "foo.bar.settlers": 1924474102.269784,
+      "foo.bar.been": false,
+      "foo.bar.upper": -1853053123
+    },
+    "foo.bar.late": 1986524194,
+    "foo.bar.rubbed": true,
+    "foo.bar.character": -726901040,
+    "foo.bar.deeply": false,
+    "foo.bar.anyone": true
+  },
+  "foo.bar.make": true,
+  "foo.bar.package": 720350447,
+  "foo.bar.walk": true,
+  "foo.bar.physical": 1141390123,
+  "foo.bar.easy": "wrapped"
+};
+
 const incompatibleSource = {
   "type1": true,
   "type1.type2": true,
@@ -38,21 +66,12 @@ const incompatibleSource = {
 
 describe('Testing Library', () => {
 
-  // create object for testing
-  let objectDotified = {};
-  let objectParsed = {};
-
   describe('Validate functions dotify and parse', () => {
-    it('Should return the dotified object', () => {
-      objectDotified = dotify(source);
-      expect(objectDotified).toBeTruthy();
-    });
-    it('Should return the parsed object', () => {
-      objectParsed = parse(objectDotified);
-      expect(objectParsed).toBeTruthy();
+    it('The parsed should be equal to the source', () => {
+      expect(JSON.stringify(parse(dotify(source)))).toBe(JSON.stringify(source));
     });
     it('The parsed should be equal to the source', () => {
-      expect(JSON.stringify(objectParsed)).toBe(JSON.stringify(source));
+      expect(JSON.stringify(parse(dotify(sourceWithDots)))).toBe(JSON.stringify(sourceWithDots));
     });
   });
 

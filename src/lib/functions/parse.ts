@@ -1,5 +1,5 @@
-import {IDotified, IDotizeDotifyOptions} from "./dotify";
-import {isArray, isNil, isObject, isString} from "../utils/utils";
+import { IDotified, IDotizeDotifyOptions } from './dotify';
+import { isArray, isNil, isObject, isString, splitBySeparator, unescapeObjectKeys } from '../utils/utils';
 
 export interface IDotizeParseOptions extends Pick<IDotizeDotifyOptions, 'prefix'|'separator'|'arrayMode'> {
 
@@ -57,14 +57,14 @@ function _parse(object: IDotified, options: IDotizeParseOptions): any {
     }
 
     // return new object
-    return !isNil(obj) ? obj : object;
+    return unescapeObjectKeys (!isNil(obj) ? obj : object, options.separator);
 
 }
 
 function _build(object: any, path: string, value: any, options: IDotizeParseOptions): any {
 
     // split path
-    const pathArray = path.split(options.separator);
+    const pathArray = splitBySeparator(path, options.separator);
 
     // extract first key of pathArray
     const pathKey = pathArray.shift();

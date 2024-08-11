@@ -1,4 +1,14 @@
-import { isArray, isDate, isFunction, isNil, isNumber, isObject, isPrimitive } from '../utils/utils';
+import {
+  escapeSeparator,
+  isArray,
+  isDate,
+  isExcluded,
+  isFunction,
+  isNil,
+  isNumber,
+  isObject,
+  isPrimitive,
+} from '../utils/utils';
 
 export type IDotizeDotifyArrayMode = 'dotify'|'dotify-bracket'|'dotify-curly-bracket'|'keep';
 export type IDotizeDotifyObjArrMode = 'keep'|'remove';
@@ -85,13 +95,8 @@ function _dotify(object: any|any[], prefix: string, options: IDotizeDotifyOption
 
     // return primitive types, functions or array if options.arrayMode is 'keep'
     if(
+      isExcluded(object) ||
       (options.filter && !options.filter(object)) ||
-      isNil(object) ||
-      isPrimitive(object) ||
-      //(isArray(object) && options.arrayMode === 'keep') ||
-      //(!isArray(object) && isObject(object) && Object.keys(object).length === 0) ||
-      isFunction(object) ||
-      isDate(object) ||
       (options.maxDepth > 0 && depth >= options.maxDepth)
     ){
         return createDotifiedObject();
@@ -114,8 +119,8 @@ function _dotify(object: any|any[], prefix: string, options: IDotizeDotifyOption
 
     // iterate through entries
     for(let key in object){
-        const path = joinPath(options.separator, prefix, key, object[key], object, options.arrayMode);
-        dotified = Object.assign(dotified, _dotify(object[key], path, options, depth + 1));
+      const path = joinPath(options.separator, prefix, escapeSeparator(key, options.separator), object[key], object, options.arrayMode);
+      dotified = Object.assign(dotified, _dotify(object[key], path, options, depth + 1));
     }
 
     // concat dotified object

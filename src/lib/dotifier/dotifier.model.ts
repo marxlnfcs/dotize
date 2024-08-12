@@ -23,6 +23,7 @@ export function dotizeDotify(data: any, options?: Partial<IDotizeDotifyOptions>)
     emptyObjectMode: options?.emptyObjectMode || 'keep', // deprecated
     emptyArrayMode: options?.emptyArrayMode || 'keep', // deprecated
     maxDepth: isNumber(options?.maxDepth) ? options.maxDepth : 0,
+    filter: options?.filter || null,
   });
 
   // return object
@@ -50,8 +51,6 @@ export class DotizeDotifier {
       omitObjects: this.options.emptyObjectStrategy === 'remove',
     });
 
-    //console.log(JSON.stringify(this.data, null, 2));
-
     // build object
     const output = this.build({}, this.data, null, 0);
 
@@ -66,7 +65,8 @@ export class DotizeDotifier {
       isNil(object) ||
       isPrimitive(object) ||
       isFunction(object) ||
-      isDate(object)
+      isDate(object) ||
+      (this.options.filter && !this.options.filter(object, depth))
     );
   }
 

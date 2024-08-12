@@ -67,4 +67,9 @@ export interface IDotizeDotifyOptions {
    */
   maxDepth: number;
 
+  /**
+   * With the filter you can control if the object should be dotified or not
+   */
+  filter: (object: any, depth: number) => boolean;
+
 }

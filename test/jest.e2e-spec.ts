@@ -1,6 +1,8 @@
-import {dotify, parse} from "../src";
+
 
 // define sources
+import { dotizeDotify, dotizeParse } from '../src';
+
 const source = {
   "date": new Date(),
   "function": () => null,
@@ -55,6 +57,31 @@ const sourceWithDots = {
   "foo.bar.easy": "wrapped"
 };
 
+const sourceWithNonEmptyItems = {
+  "date": new Date(),
+  "function": () => null,
+  "government": {
+    "flight": {
+      "familiar": true,
+      "lower": true,
+      "middle": "represent",
+      "settlers": 1924474102.269784,
+      "been": false,
+      "upper": -1853053123
+    },
+    "late": 1986524194,
+    "rubbed": true,
+    "character": -726901040,
+    "deeply": false,
+    "anyone": true
+  },
+  "make": true,
+  "package": 720350447,
+  "walk": true,
+  "physical": 1141390123,
+  "easy": "wrapped"
+};
+
 const incompatibleSource = {
   "type1": true,
   "type1.type2": true,
@@ -68,29 +95,35 @@ describe('Testing Library', () => {
 
   describe('Validate functions dotify and parse', () => {
     it('The parsed should be equal to the source', () => {
-      expect(JSON.stringify(parse(dotify(source)))).toBe(JSON.stringify(source));
+      expect(JSON.stringify(dotizeParse(dotizeDotify(source)), null, 2)).toBe(JSON.stringify(source, null, 2));
     });
     it('The parsed should be equal to the source', () => {
-      expect(JSON.stringify(parse(dotify(sourceWithDots)))).toBe(JSON.stringify(sourceWithDots));
+      expect(JSON.stringify(dotizeParse(dotizeDotify(sourceWithDots)), null, 2)).toBe(JSON.stringify(sourceWithDots, null, 2));
+    });
+    it('The parsed should be equal to the source', () => {
+      expect(JSON.stringify(dotizeParse(dotizeDotify(source, {
+        emptyObjectStrategy: 'remove',
+        emptyArrayStrategy: 'remove',
+      })), null, 2)).toBe(JSON.stringify(sourceWithNonEmptyItems, null, 2));
     });
   });
 
   describe('Test incompatible sources', () => {
     it('It should skip childs of an incompatible source', () => {
-      const obj = parse(incompatibleSource, {
+      const obj = dotizeParse(incompatibleSource, {
         incompatibleTypeStrategy: 'skip'
       });
       expect(obj).toBeTruthy();
     });
     it('It should override incompatible parent', () => {
-      const obj = parse(incompatibleSource, {
+      const obj = dotizeParse(incompatibleSource, {
         incompatibleTypeStrategy: 'override'
       });
       expect(obj).toBeTruthy();
     });
     it('It should throw an error on incompatible parent', () => {
       try{
-        parse(incompatibleSource, {
+        dotizeParse(incompatibleSource, {
           incompatibleTypeStrategy: 'throwError'
         });
         expect(false).toBeTruthy();

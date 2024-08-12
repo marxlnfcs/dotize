@@ -6,7 +6,6 @@
   "license": "MIT",
   "scripts": {
     "clean": "rimraf dist",
-    "start": "npx ts-node-dev --respawn --clear --quiet src/main.ts",
     "test": "jest --config ./test/jest-e2e.json --detectOpenHandles",
     "upgrade-packages": "node scripts/upgrade-dependencies.js",
     "generate-index": "rimraf ./src/index.ts && barrelsby --config ./barrelsby.config.json",

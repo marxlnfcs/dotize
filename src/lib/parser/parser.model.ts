@@ -1,13 +1,5 @@
 import { IDotizeParseOptions } from './parser.interface';
-import {
-  addPrefix,
-  isArray,
-  isNil,
-  isObject,
-  removePrefix,
-  splitBySeparator,
-  unescapeObjectKeys,
-} from '../utils/utils';
+import { isArray, isNil, isObject, removePrefix, splitBySeparator, unescapeObjectKeys } from '../utils/utils';
 
 export function dotizeParse(data: any, options?: Partial<IDotizeParseOptions>): any {
 
@@ -20,11 +12,12 @@ export function dotizeParse(data: any, options?: Partial<IDotizeParseOptions>): 
     arrayFillMissingIndexes: options?.arrayFillMissingIndexes ?? true,
   });
 
-  // return object
+  // dotify data
   return instance.toJson();
 
 }
 
+/** @internal */
 export class DotizeParser {
 
   /**
@@ -58,6 +51,11 @@ export class DotizeParser {
       }
     });
 
+    // return default type if output is empty
+    if(isObject(this.data) && Object.keys(this.data).length > 0 && !output){
+      return !this.isArrayKey(Object.keys(this.data)[0]) ? {} : [];
+    }
+
     // return parsed object
     return unescapeObjectKeys(!isNil(output) ? output : this.data, this.options.separator);
 
@@ -69,6 +67,10 @@ export class DotizeParser {
       case 'curly-bracket': return new RegExp(/\{(\d+)}/,);
       case 'round-bracket': return new RegExp(/\((\d+)\)/,);
     }
+  }
+
+  private isArrayKey(key: string): boolean {
+    return /\\[{}\[\](){}]|\[|\]|\{|\}|\(|\)/.test(key);
   }
 
   private splitIntoArrayPaths(key: string): string[] {

@@ -57,6 +57,16 @@ const sourceWithDots = {
   "foo.bar.easy": "wrapped"
 };
 
+const sourceWithAllEmptyObject = {
+  "foo": {
+    "bar": {}
+  }
+};
+
+const sourceWithAllEmptyArray = [
+  []
+];
+
 const sourceWithNonEmptyItems = {
   "date": new Date(),
   "function": () => null,
@@ -95,16 +105,28 @@ describe('Testing Library', () => {
 
   describe('Validate functions dotify and parse', () => {
     it('The parsed should be equal to the source', () => {
-      expect(JSON.stringify(dotizeParse(dotizeDotify(source)), null, 2)).toBe(JSON.stringify(source, null, 2));
+      expect(JSON.stringify(dotizeParse(dotizeDotify(source)))).toBe(JSON.stringify(source));
     });
     it('The parsed should be equal to the source', () => {
-      expect(JSON.stringify(dotizeParse(dotizeDotify(sourceWithDots)), null, 2)).toBe(JSON.stringify(sourceWithDots, null, 2));
+      expect(JSON.stringify(dotizeParse(dotizeDotify(sourceWithDots)))).toBe(JSON.stringify(sourceWithDots));
     });
     it('The parsed should be equal to the source', () => {
       expect(JSON.stringify(dotizeParse(dotizeDotify(source, {
         emptyObjectStrategy: 'remove',
         emptyArrayStrategy: 'remove',
-      })), null, 2)).toBe(JSON.stringify(sourceWithNonEmptyItems, null, 2));
+      })))).toBe(JSON.stringify(sourceWithNonEmptyItems));
+    });
+    it('The parsed should be equal to the source', () => {
+      expect(JSON.stringify(dotizeParse(dotizeDotify(sourceWithAllEmptyObject, {
+        emptyArrayStrategy: 'remove',
+        emptyObjectStrategy: 'remove'
+      })))).toBe('{}');
+    });
+    it('The parsed should be equal to the source', () => {
+      expect(JSON.stringify(dotizeParse(dotizeDotify(sourceWithAllEmptyArray, {
+        emptyArrayStrategy: 'remove',
+        emptyObjectStrategy: 'remove'
+      })))).toBe('[]');
     });
   });
 

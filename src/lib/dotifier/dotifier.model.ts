@@ -18,15 +18,13 @@ export function dotizeDotify(data: any, options?: Partial<IDotizeDotifyOptions>)
     prefix: options?.prefix?.trim() || null,
     separator: (options?.separator || '.').trim(),
     arrayMode: options?.arrayMode || 'bracket',
-    emptyObjectStrategy: options?.emptyObjectStrategy || options?.emptyObjectMode || 'keep',
-    emptyArrayStrategy: options?.emptyArrayStrategy || options?.emptyArrayMode || 'keep',
-    emptyObjectMode: options?.emptyObjectMode || 'keep', // deprecated
-    emptyArrayMode: options?.emptyArrayMode || 'keep', // deprecated
+    emptyObjectStrategy: options?.emptyObjectStrategy || 'keep',
+    emptyArrayStrategy: options?.emptyArrayStrategy || 'keep',
     maxDepth: isNumber(options?.maxDepth) ? options.maxDepth : 0,
     filter: options?.filter || null,
   });
 
-  // return object
+  // dotify data
   return instance.toJson();
 
 }
@@ -45,6 +43,9 @@ export class DotizeDotifier {
 
   toJson(): any {
 
+    // get base type of data
+    const type = isObject(this.data) ? 'object' : isArray(this.data) ? 'array' : 'any';
+
     // format object
     this.data = omitEmpty(this.data, {
       omitArrays: this.options.emptyArrayStrategy === 'remove',
@@ -52,10 +53,18 @@ export class DotizeDotifier {
     });
 
     // build object
-    const output = this.build({}, this.data, null, 0);
+    let output = this.build({}, this.data, null, 0);
+
+    // add prefix to object
+    output = addPrefix(output, this.options.separator, this.options.prefix);
+
+    // return default type if output is empty
+    if(!this.data && (type === 'object' || type === 'array')){
+      return type === 'object' ? {} : [];
+    }
 
     // return object
-    return addPrefix(output, this.options.separator, this.options.prefix);
+    return output;
 
   }
 

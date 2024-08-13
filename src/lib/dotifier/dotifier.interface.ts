@@ -28,30 +28,12 @@ export interface IDotizeDotifyOptions {
   arrayMode: IDotizeDotifyArrayMode;
 
   /**
-   * The empty object strategy defines how empty objects{} should be handled
-   * > keep - Empty objects are kept and {} is set as the value.
-   * > remove - Empty objects will be removed.
-   * @default keep
-   * @deprecated Please use emptyObjectStrategy instead
-   */
-  emptyObjectMode: IDotizeDotifyEmptyObjArrayStrategy;
-
-  /**
    * The empty object mode defines how empty objects{} should be handled
    * > keep - Empty objects are kept and {} is set as the value.
    * > remove - Empty objects will be removed.
    * @default keep
    */
   emptyObjectStrategy: IDotizeDotifyEmptyObjArrayStrategy;
-
-  /**
-   * The empty array mode defines how empty arrays[] should be handled
-   * > keep - Empty arrays are kept and [] is set as the value.
-   * > remove - Empty arrays will be removed.
-   * @default keep
-   * @deprecated Please use emptyArrayStrategy instead
-   */
-  emptyArrayMode: IDotizeDotifyEmptyObjArrayStrategy;
 
   /**
    * The empty array strategy defines how empty arrays[] should be handled
